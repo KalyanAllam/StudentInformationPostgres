@@ -23,7 +23,7 @@ namespace SISPostgres.Controllers
         public async Task<IActionResult> Index(int sid)
         {
 
-           // HttpContext.Session.SetInt32("sid", sid);
+            HttpContext.Session.SetInt32("sid", sid);
 
              var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
             return View(await contosoUniversityDataContext.ToListAsync());
