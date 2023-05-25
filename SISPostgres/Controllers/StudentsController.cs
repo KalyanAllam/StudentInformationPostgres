@@ -14,21 +14,23 @@ namespace SISPostgres.Controllers
     public class StudentsController : Controller
     {
         private readonly ContosoUniversityDataContext _context;
-
+        public static int globalsecid;
         public StudentsController(ContosoUniversityDataContext context)
         {
             _context = context;
         }
 
-
+        
          
 
         // GET: Students
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(int secid)
         {
-
-             
-                var contosoUniversityDataContext = _context.Students.Include(s => s.Class).Include(s => s.Section);
+            if(secid>0)
+            { globalsecid = secid; }
+          
+           
+            var contosoUniversityDataContext = _context.Students.Include(s => s.Class).Include(s => s.Section).Where(s => s.Sectionid == secid);
           
 
             return View(await contosoUniversityDataContext.ToListAsync());
@@ -57,8 +59,9 @@ namespace SISPostgres.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
+            int secid = globalsecid;
             ViewData["Classid"] = new SelectList(_context.Classes, "Classid", "Classname");
-            ViewData["Sectionid"] = new SelectList(_context.Sections, "Sectionid", "Classsectionname");
+            ViewData["Sectionid"] = new SelectList(_context.Sections.Where(e => e.Sectionid == secid), "Sectionid", "Classsectionname");
             return View();
         }
 
@@ -69,20 +72,22 @@ namespace SISPostgres.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Studentid,Classid,Lastname,Firstname,Phoneno,Email,Sectionid,Rollno")] Student student)
         {
+            int secid = globalsecid;
             if (ModelState.IsValid)
             {
                 _context.Add(student);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { secid });
             }
             ViewData["Classid"] = new SelectList(_context.Classes, "Classid", "Classname", student.Classid);
-            ViewData["Sectionid"] = new SelectList(_context.Sections, "Sectionid", "Classsectionname", student.Sectionid);
+            ViewData["Sectionid"] = new SelectList(_context.Sections.Where(e => e.Sectionid == secid), "Sectionid", "Classsectionname", student.Sectionid);
             return View(student);
         }
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            int secid = globalsecid;
             if (id == null || _context.Students == null)
             {
                 return NotFound();
@@ -105,6 +110,7 @@ namespace SISPostgres.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Studentid,Classid,Lastname,Firstname,Phoneno,Email,Sectionid,Rollno")] Student student)
         {
+            int secid = globalsecid;
             if (id != student.Studentid)
             {
                 return NotFound();
@@ -128,7 +134,7 @@ namespace SISPostgres.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index),new { secid });
             }
             ViewData["Classid"] = new SelectList(_context.Classes, "Classid", "Classname", student.Classid);
             ViewData["Sectionid"] = new SelectList(_context.Sections, "Sectionid", "Classsectionname", student.Sectionid);
@@ -160,6 +166,7 @@ namespace SISPostgres.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            int secid = globalsecid;
             if (_context.Students == null)
             {
                 return Problem("Entity set 'ContosoUniversityDataContext.Students'  is null.");
@@ -171,7 +178,7 @@ namespace SISPostgres.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index),new { secid });
         }
 
         private bool StudentExists(int id)

@@ -24,10 +24,11 @@ namespace SISPostgres.Controllers
         // GET: Enrollments
         public async Task<IActionResult> Index(int sid)
         {
-            globalsid = sid;
-         //  HttpContext.Session.SetInt32(SessionKeyName, sid);
+            if (sid > 0)
+            { globalsid = sid; }
+            //  HttpContext.Session.SetInt32(SessionKeyName, sid);
 
-             var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
+            var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
             return View(await contosoUniversityDataContext.ToListAsync());
         }
 
