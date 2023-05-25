@@ -10,8 +10,10 @@ using System.Web;
 
 namespace SISPostgres.Controllers
 {
+   
     public class EnrollmentsController : Controller
     {
+        public static int globalsid;
         private readonly ContosoUniversityDataContext _context;
 
         public EnrollmentsController(ContosoUniversityDataContext context)
@@ -22,8 +24,8 @@ namespace SISPostgres.Controllers
         // GET: Enrollments
         public async Task<IActionResult> Index(int sid)
         {
-
-            HttpContext.Session.SetInt32("sid", sid);
+            globalsid = sid;
+         //  HttpContext.Session.SetInt32(SessionKeyName, sid);
 
              var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
             return View(await contosoUniversityDataContext.ToListAsync());
@@ -34,7 +36,7 @@ namespace SISPostgres.Controllers
         {
 
 
-       //     int sid = HttpContext.Session.GetInt32("sid").Value;
+           int sid = globalsid;
             if (id == null || _context.Enrollments == null)
             {
                 return NotFound();
@@ -45,6 +47,7 @@ namespace SISPostgres.Controllers
                 .Include(e => e.Student)
                 .Include(e => e.Term)
                 .FirstOrDefaultAsync(m => m.Enrollmentid == id);
+                
             if (enrollment == null)
             {
                 return NotFound();
@@ -56,8 +59,9 @@ namespace SISPostgres.Controllers
         // GET: Enrollments/Create
         public IActionResult Create()
         {
+            int sid = globalsid;
             ViewData["Courseid"] = new SelectList(_context.Courses, "Courseid", "Name");
-            ViewData["Studentid"] = new SelectList(_context.Students, "Studentid", "Lastname");
+            ViewData["Studentid"] = new SelectList(_context.Students.Where(e => e.Studentid == sid), "Studentid", "Lastname");
             ViewData["Termid"] = new SelectList(_context.Terms, "Termid", "Termname");
             return View();
         }
@@ -69,14 +73,15 @@ namespace SISPostgres.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Enrollmentid,Courseid,Studentid,Termid,Marks,Marksobtained,Grade")] Enrollment enrollment)
         {
+            int sid = globalsid;
             if (ModelState.IsValid)
             {
                 _context.Add(enrollment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { sid });
             }
             ViewData["Courseid"] = new SelectList(_context.Courses, "Courseid", "Name", enrollment.Courseid);
-            ViewData["Studentid"] = new SelectList(_context.Students, "Studentid", "Lastname", enrollment.Studentid);
+            ViewData["Studentid"] = new SelectList(_context.Students.Where(e => e.Studentid == sid), "Studentid", "Lastname", enrollment.Studentid);
             ViewData["Termid"] = new SelectList(_context.Terms, "Termid", "Termname", enrollment.Termid);
             return View(enrollment);
         }
@@ -84,6 +89,7 @@ namespace SISPostgres.Controllers
         // GET: Enrollments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            int sid = globalsid;
             if (id == null || _context.Enrollments == null)
             {
                 return NotFound();
@@ -95,7 +101,7 @@ namespace SISPostgres.Controllers
                 return NotFound();
             }
             ViewData["Courseid"] = new SelectList(_context.Courses, "Courseid", "Name", enrollment.Courseid);
-            ViewData["Studentid"] = new SelectList(_context.Students, "Studentid", "Lastname", enrollment.Studentid);
+            ViewData["Studentid"] = new SelectList(_context.Students.Where(e => e.Studentid == sid), "Studentid", "Lastname", enrollment.Studentid);
             ViewData["Termid"] = new SelectList(_context.Terms, "Termid", "Termname", enrollment.Termid);
             return View(enrollment);
         }
@@ -107,6 +113,7 @@ namespace SISPostgres.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Enrollmentid,Courseid,Studentid,Termid,Marks,Marksobtained,Grade")] Enrollment enrollment)
         {
+            int sid = globalsid;
             if (id != enrollment.Enrollmentid)
             {
                 return NotFound();
@@ -130,10 +137,10 @@ namespace SISPostgres.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { sid });
             }
             ViewData["Courseid"] = new SelectList(_context.Courses, "Courseid", "Name", enrollment.Courseid);
-            ViewData["Studentid"] = new SelectList(_context.Students, "Studentid", "Lastname", enrollment.Studentid);
+            ViewData["Studentid"] = new SelectList(_context.Students.Where(e => e.Studentid == sid), "Studentid", "Lastname", enrollment.Studentid);
             ViewData["Termid"] = new SelectList(_context.Terms, "Termid", "Termname", enrollment.Termid);
             return View(enrollment);
         }
@@ -164,6 +171,7 @@ namespace SISPostgres.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            int sid = globalsid;
             if (_context.Enrollments == null)
             {
                 return Problem("Entity set 'ContosoUniversityDataContext.Enrollments'  is null.");
@@ -175,7 +183,7 @@ namespace SISPostgres.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { sid });
         }
 
         private bool EnrollmentExists(int id)
