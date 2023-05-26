@@ -27,8 +27,7 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Sectionid">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Sectionid">Details</a> |
-         
-                    @Html.ActionLink("List of Students", "Index", "Students", new { secid = @item.Sectionid }, null)
+                             @Html.ActionLink("List of Students", "Index", "Students", new { secid = @item.Sectionid }, null)
             </td>
         </tr>
 }
