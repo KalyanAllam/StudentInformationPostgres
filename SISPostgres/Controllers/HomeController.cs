@@ -15,6 +15,11 @@ namespace SISPostgres.Controllers
 
         public IActionResult Index()
         {
+            if (TempData.Peek("Message") == null)
+            {
+                var routeValue = new RouteValueDictionary(new { action = "Index", controller = "Login" });
+                return RedirectToRoute(routeValue);
+            }
             return View();
         }
 

@@ -8,8 +8,11 @@ namespace SISPostgres.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
 
+        [TempData]
+        public string Message { get; set; }
+        private readonly ILogger<LoginController> _logger;
+        public static string globallog = "";
         public LoginController(ILogger<LoginController> logger)
         {
             _logger = logger;
@@ -24,8 +27,8 @@ namespace SISPostgres.Controllers
         [HttpPost]
         public IActionResult Index([Bind] LoginViewModel ad)
         {
-
-            string uid = ad.Username;
+            
+        string uid = ad.Username;
             string pass = ad.Password;
             string outpass;
 
@@ -43,11 +46,11 @@ namespace SISPostgres.Controllers
 
             if (Username == 1)
             {
-                var routeValue = new RouteValueDictionary
- (new { action = "Index", controller = "Home" });
+                Message = "Y";
+                var routeValue = new RouteValueDictionary (new { action = "Index", controller = "Home" });
                 return RedirectToRoute(routeValue);
 
-                TempData["msg"] = "You are welcome to Admin Section";
+              
             }
             else
             { TempData["msg"] = "User id or Password is wrong.!"; }
