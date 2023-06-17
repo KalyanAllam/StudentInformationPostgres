@@ -32,7 +32,7 @@ namespace SISPostgres.Controllers
             string pass = ad.Password;
             string outpass;
 
-            NpgsqlConnection con = new NpgsqlConnection("Host=localhost;Username=postgres;Password=superuser;Database=ContosoUniversityData");
+            NpgsqlConnection con = new NpgsqlConnection("Host=mahmud.db.elephantsql.com;Username=aipiynif;Password=bjGv4oE0sN4ZsdzMWtw6NQnWkCCs0bDt;Database=aipiynif");
         //    string CS = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
              
             con.Open();
@@ -43,7 +43,7 @@ namespace SISPostgres.Controllers
 
 
             Int64 Username = (Int64)cmd.ExecuteScalar();
-
+            con.Close();
             if (Username == 1)
             {
                 Message = "Y";
