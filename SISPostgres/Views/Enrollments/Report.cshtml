@@ -15,10 +15,10 @@
    
     <input type="submit" value="submit" />
 }
- <b>Term: </b>@ViewBag.TeaType
   
 
  @if(ViewData["Enrollments"] != null )
+ { 
     @foreach (var std in ViewData["Enrollments"] as IList<Enrollment>)
     { 
 
@@ -29,6 +29,6 @@
              
         </tr>
 
-
+    }
     }
  
