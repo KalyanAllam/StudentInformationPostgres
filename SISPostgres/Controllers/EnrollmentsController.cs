@@ -44,6 +44,8 @@ namespace SISPostgres.Controllers
         {
             var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
             ViewData["Termid"] = new SelectList(_context.Terms, "Termid", "Termname");
+           
+            ViewData["Enrollments"] = null;
             return View(await contosoUniversityDataContext.ToListAsync());
         }
 
@@ -53,12 +55,24 @@ namespace SISPostgres.Controllers
         {
             var selectedValue = model.SelectTeaType;
             ViewBag.TeaType = selectedValue.ToString();
-   var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term ).Where(e => e.Studentid == globalsid).FirstOrDefaultAsync(m => m.Term.Termname == selectedValue.ToString()); ;
-
+            string studentname="";
+            int totalmarks=0;
+   var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term ).Where(e => e.Studentid == globalsid).Where(e => e.Term.Termname == selectedValue.ToString());
+         
             ViewData["Enrollments"] = contosoUniversityDataContext;
+            foreach (var item in contosoUniversityDataContext)
+            { 
+                studentname = item.Student.Lastname;
+                if(item.Marksobtained>0)
+                { totalmarks = Convert.ToInt32(totalmarks)  + Convert.ToInt32(item.Marksobtained); }
 
+               
+            }
 
-            return View();
+            
+            ViewBag.totalmarks = totalmarks;
+            ViewBag.studentname = studentname;
+            return View(await contosoUniversityDataContext.ToListAsync());
         }
 
 

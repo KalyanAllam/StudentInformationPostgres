@@ -16,19 +16,38 @@
     <input type="submit" value="submit" />
 }
   
-
- @if(ViewData["Enrollments"] != null )
- { 
-    @foreach (var std in ViewData["Enrollments"] as IList<Enrollment>)
-    { 
-
-        <tr>
-            <td>@std.Course.Name</td>
-            <td>@std.Marks</td>
-            <td>@std.Marksobtained</td>
-             
-        </tr>
-
-    }
-    }
+  @ViewBag.studentname 
+ @ViewBag.TeaType
  
+ @if(ViewData["Enrollments"] !=null)
+ {
+    <dd>
+        <table class="table">
+            <tr>
+                <th>Course Title</th>
+                <th>Grade</th>
+                <th>Marks</th>
+                <th>MarksObtained</th>
+            </tr>
+            @foreach (var item in Model )
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Course.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Grade)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Marks)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Marksobtained)
+                    </td>
+                </tr>
+            }
+        </table>
+    </dd>
+
+    @ViewBag.totalmarks
+ }
