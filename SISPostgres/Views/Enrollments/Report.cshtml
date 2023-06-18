@@ -1,0 +1,34 @@
+﻿@model IEnumerable<SISPostgres.Models.Enrollment>
+ 
+@{
+    ViewData["Title"] = "Report Card";
+}
+ 
+ 
+
+<br /><br />
+@using (Html.BeginForm("Report", "Enrollments", FormMethod.Post))
+{
+    <b>Select Tea Type: </b> 
+ 
+    @Html.DropDownList("SelectTeaType", new SelectList(Enum.GetValues(typeof(TeaType))),"--Select Term--")
+   
+    <input type="submit" value="submit" />
+}
+ <b>Term: </b>@ViewBag.TeaType
+  
+
+ @if(ViewData["Enrollments"] != null )
+    @foreach (var std in ViewData["Enrollments"] as IList<Enrollment>)
+    { 
+
+        <tr>
+            <td>@std.Course.Name</td>
+            <td>@std.Marks</td>
+            <td>@std.Marksobtained</td>
+             
+        </tr>
+
+
+    }
+ 

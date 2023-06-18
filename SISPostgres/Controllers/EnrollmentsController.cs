@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SISPostgres.Models;
 using System.Web;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace SISPostgres.Controllers
 {
@@ -29,11 +30,40 @@ namespace SISPostgres.Controllers
             //  HttpContext.Session.SetInt32(SessionKeyName, sid);
 
             var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
+
+            ViewBag.sid = sid;
+           
+            return View(await contosoUniversityDataContext.ToListAsync());
+
+
+
+        }
+
+
+        public async Task<IActionResult> Report(int sid)
+        {
+            var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term).Where(e => e.Studentid == sid);
+            ViewData["Termid"] = new SelectList(_context.Terms, "Termid", "Termname");
             return View(await contosoUniversityDataContext.ToListAsync());
         }
 
-        // GET: Enrollments/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        [HttpPost]
+        public async Task<IActionResult> Report(UserModel model)
+        {
+            var selectedValue = model.SelectTeaType;
+            ViewBag.TeaType = selectedValue.ToString();
+   var contosoUniversityDataContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).Include(e => e.Term ).Where(e => e.Studentid == globalsid).FirstOrDefaultAsync(m => m.Term.Termname == selectedValue.ToString()); ;
+
+            ViewData["Enrollments"] = contosoUniversityDataContext;
+
+
+            return View();
+        }
+
+
+            // GET: Enrollments/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
 
 

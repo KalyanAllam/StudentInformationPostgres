@@ -63,40 +63,6 @@
 }
     </tbody>
 </table>
+  
 
-
-                <table class="table">
-    <tr>
-        <th>
-            Term
-        </th>
-        <th>
-            Marks
-        </th>
-        <th>
-            Marksobtained
-        </th>
-       
-        <th>
-            Grade
-        </th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-            <tr>
-            <td>
-                @Html.DisplayFor(model  => item.Term.Termname)
-            </td>
-                <td>
-                @Html.DisplayFor(model  => item.Marks)
-                </td>
-                <td>
-                @Html.DisplayFor(model  => item.Marksobtained)
-                </td>
-                <td>
-                @Html.DisplayFor(model  => item.Grade)
-                </td>
-            </tr>
-    }
-</table>
+@Html.ActionLink("Report Card", "Report", "Enrollments", new { sid = ViewBag.sid }, null)
